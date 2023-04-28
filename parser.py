@@ -1,3 +1,5 @@
+import json
+
 import requests
 from config import YW_API_KEY
 
@@ -7,11 +9,7 @@ HEADERS = {'X-Yandex-API-Key': YW_API_KEY}
 
 def get_weather():
     response = requests.get(URL, headers=HEADERS)
-    api_status = response.status_code
-    if api_status == 200:
-        return response.text
+    if response.status_code == 200:
+        return json.loads(response.text)
     else:
         return "Проблема с сервисом погоды"
-
-print(get_weather())
-

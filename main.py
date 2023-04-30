@@ -1,22 +1,42 @@
-from config import TG_TOKEN
-from parser import get_weather
+import json
 
-import telebot
+import requests
 
-bot = telebot.TeleBot(TG_TOKEN, parse_mode='html')
+import asyncio
+
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import Command
+
+from config import TG_TOKEN, HEADERS
 
 
-@bot.message_handler(commands=['start'])
-def welcome_message(message):
-    weather_data = get_weather()
+bot = Bot(token=TG_TOKEN, parse_mode="HTML")
+dp = Dispatcher()
+user_shared_location = []
 
-    temperature = weather_data["fact"]["temp"]
-    feels_like = weather_data["fact"]["feels_like"]
 
-    bot.send_message(message.chat.id, f"Привет,\nПогода в Москве:\n"
-                                      f"<b>Температура:</b> {temperature}°C\n"
-                                      f"<b>Ощущается как: </b>{feels_like}°C")
+
+@dp.message(F.location)
+async def get_location_data(message: types.Message):
+    lat = message.location.latitude
+    lon = message.location.longitude
+
+    url = f'https://api.weather.yandex.ru/v2/informers?lat={lat}&lon={lon}&[lang=ru_RU]'
+    response = requests.get(url, headers=HEADERS)
+    weather_data = json.loads(response.text)
+
+    if response.status_code == 200:
+        temperature = weather_data["fact"]["temp"]
+        feels_like = weather_data["fact"]["feels_like"]
+        reply = f"Привет,\nПогода в ???:\n" \
+                f"<b>Температура: </b>{temperature}°C\n" \
+                f"<b>Ощущается как: </b>{feels_like}°C"
+        await message.answer(reply)
+
+
+async def main():
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    bot.polling(none_stop=True)
+    asyncio.run(main())

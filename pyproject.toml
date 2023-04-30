@@ -7,8 +7,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pytelegrambotapi = "^4.11.0"
-update = "^0.0.1"
+aiogram = "3.0.0b7"
+requests = "^2.29.0"
 
 
 [build-system]

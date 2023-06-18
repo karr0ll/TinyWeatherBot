@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 
 import requests
 from dotenv import load_dotenv
@@ -15,8 +14,8 @@ class WeatherAPIHandler:
         self.lon = lon
 
     def get_current_weather(self):
-        url = f'https://api.openweathermap.org/data/2.5/weather?lat=' \
-              f'{self.lat}' \
+        url = f'https://api.openweathermap.org/data/2.5/weather?' \
+              f'lat={self.lat}' \
               f'&lon={self.lon}' \
               f'&units=metric'\
               f'&lang=ru'\
@@ -45,9 +44,17 @@ class WeatherAPIHandler:
 
 
     def get_forecast(self):
-        url = f"api.openweathermap.org/data/2.5/forecast?lat={self.lat}&lon={self.lon}&appid={self.open_weather_api_key}"
+        url = f'https://api.openweathermap.org/data/2.5/forecast?' \
+                f'lat={self.lat}' \
+                f'&lon={self.lon}' \
+                f'&units=metric' \
+                f'&lang=ru' \
+                f'&appid={self.open_weather_api_key}'
         response = requests.get(url)
-        return json.loads(response.text)
+        if response.status_code == 200:
+            return json.loads(response.text)
+        else:
+            return response.text
 
 
 

@@ -12,6 +12,8 @@ dadata = "^21.10.1"
 python-dotenv = "^1.0.0"
 python-telegram-bot = "^20.3"
 pytelegrambotapi = "^4.12.0"
+timezonefinder = "^6.2.0"
+pytz = "^2023.3"
 
 
 [build-system]
